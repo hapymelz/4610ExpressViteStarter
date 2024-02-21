@@ -4,8 +4,10 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [randomNumber, setRandomNumber] = useState(0);
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
 
   async function getRandomNumber() {
     const res = await fetch("/random_number");
@@ -17,29 +19,34 @@ function App() {
     getRandomNumber();
   }, []);
 
+  async function createUser(e) {
+    e.preventDefault();
+
+    const res = await fetch("/users", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(
+        email,
+        password,
+        firstName,
+        lastName
+      )
+    })
+    console.log(await res.json())
+  }
+
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-        <p>Random number: {randomNumber}</p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     <form onSubmit={createUser}>
+        <input placeholder="First Name" type='firstName' value={firstName} onChange={setFirstName(e.target.value)}/>
+        <input placeholder="Last Name" type='lastName' value={lastName} onChange={setLastName(e.target.value)}/>
+        <input placeholder="Email" type='email' value={email} onChange={setEmail(e.target.value)}/>
+        <input placeholder="Password" type='password' value={password} onChange={setPassword(e.target.value)}/>
+     </form>
+
+
     </>
   )
 }

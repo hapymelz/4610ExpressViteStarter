@@ -3,6 +3,14 @@ import path from "path";
 import { engine } from 'express-handlebars';
 import fs from "fs";
 import * as dotenv from "dotenv";
+import bodyParser from "body-parser";
+import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcryptjs"
+
+
+
+const db = new PrismaClient()
+
 dotenv.config();
 
 const DEBUG = process.env.NODE_ENV !== "production";
@@ -13,6 +21,7 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
+app.use(bodyParser.json())
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`)
   next()
@@ -41,6 +50,20 @@ app.get("/", (req, res) => {
     layout: false
   });
 });
+
+//creating data
+app.post("/users", async (req, res) => {
+  const user = await db.user.create({
+    data: {
+      email: req.body.email,
+      password_hash: bcrypt.hashSync(req.body.password),
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      profile: {}
+    }
+  })
+  res.json({success: true});
+})
 
 app.get("/random_number", (req, res) => {
   res.json({ number: Math.random() * 1000 });

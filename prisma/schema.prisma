@@ -9,3 +9,29 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// needed in every table usually
+// id Int @id @default(autoincrement()) 
+// created_at DateTime @default(now()) 
+// updated_at DateTime @updatedAt 
+
+model User {
+  id            Int      @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  email         String   @unique
+  password_hash String
+  profile       Profile  @relation(fields: [profileId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  profileId     Int      @unique
+}
+
+model Profile {
+  id              Int      @id @default(autoincrement())
+  age             Int?
+  profileImageUrl String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  user            User?
+}
