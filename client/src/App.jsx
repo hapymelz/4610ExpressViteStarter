@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Outlet } from 'react-router-dom'
+
 
 function App() {
   const [email, setEmail] = useState("")
@@ -39,12 +38,11 @@ function App() {
 
   return (
     <>
-     <form onSubmit={createUser}>
-        <input placeholder="First Name" type='firstName' value={firstName} onChange={setFirstName(e.target.value)}/>
-        <input placeholder="Last Name" type='lastName' value={lastName} onChange={setLastName(e.target.value)}/>
-        <input placeholder="Email" type='email' value={email} onChange={setEmail(e.target.value)}/>
-        <input placeholder="Password" type='password' value={password} onChange={setPassword(e.target.value)}/>
-     </form>
+    <div>
+      <nav className="my-nav"><h2>App Name</h2></nav>
+      <Outlet />
+    </div>
+     
 
 
     </>

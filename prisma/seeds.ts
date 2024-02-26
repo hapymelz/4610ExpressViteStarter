@@ -15,7 +15,7 @@ async function main() {
         lastName: "ADMIN",
         email: process.env. ADMIN_EMAIL!!,
         password_hash: bcrypt.hashSync(process.env.ADMIN_PASSWORD!!),
-        profileId: {}
+        profile: {},
     },
     update: {
       email: process.env. ADMIN_EMAIL!!,

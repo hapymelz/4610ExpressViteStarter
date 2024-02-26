@@ -59,10 +59,27 @@ app.post("/users", async (req, res) => {
       password_hash: bcrypt.hashSync(req.body.password),
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      profile: {}
+      profile: {
+        create: {},
+      }
     }
   })
   res.json({success: true});
+})
+
+app.post("/sessions", async (req, res) => {
+  const user = await db.user.findUnique({
+    where: {
+      email: req.body.email
+    }
+  });
+
+  if (user && bcrypt.compareSync(req.body.password, user.password_hash)) {
+    //user provided correct email and password, sign user in
+    
+  } else {
+    res.status(404).json({error: "not found"})
+  }
 })
 
 app.get("/random_number", (req, res) => {
