@@ -11,12 +11,9 @@ function App() {
   async function getRandomNumber() {
     const res = await fetch("/random_number");
     const body = await res.json();
-    setRandomNumber(body.number);
   }
 
-  useEffect(() => {
-    getRandomNumber();
-  }, []);
+
 
   async function createUser(e) {
     e.preventDefault();
@@ -38,12 +35,10 @@ function App() {
 
   return (
     <>
-    <div>
-      <nav className="my-nav"><h2>App Name</h2></nav>
-      <Outlet />
-    </div>
-     
-
+      <div>
+        <nav className="my-nav"><h2>App Name</h2></nav>
+        <Outlet />
+      </div>
 
     </>
   )

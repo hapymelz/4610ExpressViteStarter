@@ -6,6 +6,11 @@ import * as dotenv from "dotenv";
 import bodyParser from "body-parser";
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs"
+import * as jwt from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
+import { buildUsersController } from "./server/controllers/users_controller";
+import { buildSessionsController } from "./server/controllers/sessions_controller";
+import { buildHomeController } from "./server/controllers/home_controller";
 
 
 
@@ -39,52 +44,9 @@ if (!DEBUG) {
   });
 }
 
-
-console.log(MANIFEST);
-app.get("/", (req, res) => {
-  res.render('index', {
-    debug: DEBUG,
-    jsBundle: DEBUG ? "" : MANIFEST["src/main.jsx"]["file"],
-    cssBundle: DEBUG ? "" : MANIFEST["src/main.jsx"]["css"][0],
-    assetUrl: process.env.ASSET_URL,
-    layout: false
-  });
-});
-
-//creating data
-app.post("/users", async (req, res) => {
-  const user = await db.user.create({
-    data: {
-      email: req.body.email,
-      password_hash: bcrypt.hashSync(req.body.password),
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      profile: {
-        create: {},
-      }
-    }
-  })
-  res.json({success: true});
-})
-
-app.post("/sessions", async (req, res) => {
-  const user = await db.user.findUnique({
-    where: {
-      email: req.body.email
-    }
-  });
-
-  if (user && bcrypt.compareSync(req.body.password, user.password_hash)) {
-    //user provided correct email and password, sign user in
-    
-  } else {
-    res.status(404).json({error: "not found"})
-  }
-})
-
-app.get("/random_number", (req, res) => {
-  res.json({ number: Math.random() * 1000 });
-});
+app.use("/", buildHomeController(db))
+app.use("/users", buildUsersController(db))
+app.use("/sessions", buildSessionsController(db))
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Listening on port ${process.env.PORT || 3000}...`);
